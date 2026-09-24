@@ -1,3 +1,10 @@
+## Título
+
+Use Conventional Commits no título: `feat:`, `fix:`, `perf:`, `refactor:`,
+`docs:`, `test:`, `build:`, `ci:`, `style:` ou `chore:`, seguido de uma
+mensagem em inglês, minúscula e sem escopo entre parênteses. O tipo comunica o
+impacto da versão semântica.
+
 ## Objetivo
 
 [preencha-me]
