@@ -6,19 +6,22 @@ instalados uma vez por máquina e chamados pelos Makefiles de cada projeto.
 
 ## Instalação
 
+O `Makefile` de cada projeto já resolve isso sozinho: `make extract-env`
+encadeia `make vault-config`, que clona este repositório (ele é público) em
+`ORG_SCRIPTS_DIR` na primeira execução e faz `git pull --ff-only` nas
+seguintes. Não é preciso clonar manualmente.
+
+Instalação/atualização manual continuam possíveis quando preciso:
+
 ```powershell
 git clone https://github.com/Solierrr/infra-scripts.git "$env:USERPROFILE/.local/share/solierrr-infra-scripts"
-```
-
-Para receber uma nova versão, atualize quando for conveniente:
-
-```powershell
 git -C "$env:USERPROFILE/.local/share/solierrr-infra-scripts" pull --ff-only
 ```
 
 Cada projeto declara o caminho em `ORG_SCRIPTS_DIR` e disponibiliza os atalhos
 adequados no seu próprio `Makefile`. Consulte
-`docs-warehouse/templates/make/README.md` para o contrato de integração.
+`docs-warehouse/templates/make/README.md` para o contrato de integração
+(`vault-config` / `vault-auth` / `extract-env`).
 
 ## Scripts
 
