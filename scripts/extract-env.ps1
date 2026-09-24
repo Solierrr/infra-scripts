@@ -40,7 +40,7 @@ $ServiceFolderMap = @{
 }
 
 if ($Service -and -not $ServiceFolderMap.ContainsKey($Service)) {
-    throw "Servico '$Service' não mapeado. Adicione suas pastas ao ServiceFolderMap em org-scripts antes de executar."
+    throw "Servico '$Service' não mapeado. Adicione suas pastas ao ServiceFolderMap em infra-scripts antes de executar."
 }
 
 if (-not (Get-Command infisical -ErrorAction SilentlyContinue)) {
