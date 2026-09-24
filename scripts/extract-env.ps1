@@ -60,7 +60,7 @@ $folders = if ($Service) {
 $label = if ($Service) { $Service } else { "todos os serviços" }
 
 $lines = [System.Collections.Generic.List[string]]::new()
-$lines.Add("# Gerado por org-scripts/extract-env.ps1 - Service=$label Environment=$Environment - $(Get-Date -Format 'yyyy-MM-dd HH:mm:ss')")
+$lines.Add("# Gerado por infra-scripts/extract-env.ps1 - Service=$label Environment=$Environment - $(Get-Date -Format 'yyyy-MM-dd HH:mm:ss')")
 
 foreach ($folder in $folders) {
     Write-Host "Extraindo $folder (env=$Environment)..." -ForegroundColor Cyan

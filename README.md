@@ -1,4 +1,4 @@
-# org-scripts
+# infra-scripts
 
 Ferramentas de terminal compartilhadas pelos repositórios Solierrr. Este
 repositório não é uma aplicação e não produz imagem Docker: os scripts são
@@ -7,13 +7,13 @@ instalados uma vez por máquina e chamados pelos Makefiles de cada projeto.
 ## Instalação
 
 ```powershell
-git clone https://github.com/Solierrr/org-scripts.git "$env:USERPROFILE/.local/share/solierrr-org-scripts"
+git clone https://github.com/Solierrr/infra-scripts.git "$env:USERPROFILE/.local/share/solierrr-infra-scripts"
 ```
 
 Para receber uma nova versão, atualize quando for conveniente:
 
 ```powershell
-git -C "$env:USERPROFILE/.local/share/solierrr-org-scripts" pull --ff-only
+git -C "$env:USERPROFILE/.local/share/solierrr-infra-scripts" pull --ff-only
 ```
 
 Cada projeto declara o caminho em `ORG_SCRIPTS_DIR` e disponibiliza os atalhos
