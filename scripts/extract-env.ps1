@@ -34,6 +34,7 @@ $ServiceFolderMap = @{
     "ai-assistant"       = @("/database", "/redis", "/llm", "/agent-queue")
     "ai-validation"      = @("/llm")
     "web-app"            = @("/vite", "/service-urls")
+    "mobile-app"         = @("/service-urls")
     "google-registry"    = @("/google")
     "databricks-sync"    = @("/database", "/databricks")
     "database-console"   = @("/database")
