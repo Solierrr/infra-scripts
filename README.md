@@ -31,6 +31,7 @@ make extract-env SERVICE=api-core
 ```
 
 A opção “Todos os serviços” exporta todas as pastas mapeadas e deve ser escolhida explicitamente. Se uma pasta não retornar nenhuma variável, o script informa o ambiente e o caminho e mantém o `.env` existente intacto.
+No Windows, o script prioriza `infisical.exe` para evitar shims npm inválidos no PowerShell. Se o CLI só conseguir responder com segredos do cache após uma falha de conexão, a extração é interrompida sem substituir o arquivo local.
 
 ## Scripts
 

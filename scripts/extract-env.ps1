@@ -90,11 +90,15 @@ if (-not $PSBoundParameters.ContainsKey('Environment')) {
     $Environment = $environmentOptions[$environmentChoice - 1]
 }
 
-if (-not (Get-Command infisical -ErrorAction SilentlyContinue)) {
+$InfisicalCommand = Get-Command infisical.exe -ErrorAction SilentlyContinue
+if (-not $InfisicalCommand) {
+    $InfisicalCommand = Get-Command infisical -ErrorAction SilentlyContinue
+}
+if (-not $InfisicalCommand) {
     throw "Infisical CLI não instalado. Instale-o e execute 'infisical login' antes de usar extract-env."
 }
 
-& infisical user get token --silent *> $null
+& $InfisicalCommand.Source user get token --silent *> $null
 if ($LASTEXITCODE -ne 0) {
     throw "Infisical CLI sem sessão ativa. Execute 'infisical login' antes de usar extract-env."
 }
@@ -112,10 +116,20 @@ $lines.Add("# Gerado por infra-scripts/extract-env.ps1 - Service=$label Environm
 
 foreach ($folder in $folders) {
     Write-Host "Extraindo $folder (env=$Environment)..." -ForegroundColor Cyan
-    $output = @(& infisical export --env=$Environment --path=$folder --format=dotenv --projectId=$InfisicalProjectId --silent 2>$null)
-    $exitCode = $LASTEXITCODE
+    $previousErrorActionPreference = $ErrorActionPreference
+    try {
+        $ErrorActionPreference = 'Continue'
+        $output = @(& $InfisicalCommand.Source export --env=$Environment --path=$folder --format=dotenv --projectId=$InfisicalProjectId --silent 2>&1)
+        $exitCode = $LASTEXITCODE
+    }
+    finally {
+        $ErrorActionPreference = $previousErrorActionPreference
+    }
     if ($exitCode -ne 0) {
         throw "Falha ao extrair '$folder' no ambiente '$Environment' (exit code $exitCode). Confira o acesso, o ambiente e o caminho no Infisical."
+    }
+    if (@($output | Where-Object { $_ -match 'serving secrets from last successful fetch' }).Count -gt 0) {
+        throw "Infisical não conseguiu consultar o servidor para '$folder' no ambiente '$Environment' e retornou dados do cache. O arquivo '$OutputPath' não foi alterado."
     }
 
     $dotenvLines = @($output | Where-Object { $_ -match '^\s*(?:export\s+)?[^#\s][^=]*=' })
