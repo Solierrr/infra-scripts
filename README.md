@@ -23,6 +23,15 @@ adequados no seu próprio `Makefile`. Consulte
 `docs-warehouse/templates/make/README.md` para o contrato de integração
 (`vault-config` / `vault-auth` / `extract-env`).
 
+Sem parâmetros, `make extract-env` mostra menus numerados para escolher o serviço e o ambiente. Também é possível informar um ou ambos diretamente:
+
+```powershell
+make extract-env SERVICE=database-console ENV=qa
+make extract-env SERVICE=api-core
+```
+
+A opção “Todos os serviços” exporta todas as pastas mapeadas e deve ser escolhida explicitamente. Se uma pasta não retornar nenhuma variável, o script informa o ambiente e o caminho e mantém o `.env` existente intacto.
+
 ## Scripts
 
 ### `extract-env.ps1`
@@ -32,10 +41,11 @@ que cada serviço depende. Requer Infisical CLI instalado e sessão autenticada
 (`infisical login`).
 
 ```powershell
+./scripts/extract-env.ps1
 ./scripts/extract-env.ps1 -Service api-core -Environment local -OutputPath .env
 ```
 
-O script mantém o mapa de serviço → pastas neste repositório, portanto toda
+Sem argumentos, o script pergunta o serviço e o ambiente em menus numerados. O script mantém o mapa de serviço → pastas neste repositório, portanto toda
 mudança de dependência de segredo é revisável e chega igualmente aos projetos
 que atualizarem a ferramenta.
 
