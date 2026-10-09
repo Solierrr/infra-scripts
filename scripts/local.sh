@@ -53,7 +53,7 @@ container_port() {
     return
   fi
   if [ -f Dockerfile ]; then
-    exposed=$(awk '$1 == "EXPOSE" { sub(/\/.*/, "", $2); print $2; exit }' Dockerfile | tr -d '')
+    exposed=$(awk '$1 == "EXPOSE" { sub(/\/.*/, "", $2); print $2; exit }' Dockerfile | tr -d '\r')
     if [ -n "$exposed" ]; then
       printf '%s' "$exposed"
       return
