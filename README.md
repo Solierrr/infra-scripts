@@ -75,3 +75,10 @@ Como funciona:
 - Quando o Infisical falha, o script explica o que verificar e aponta para o `TRY-LOCAL.md`.
 
 Variáveis: `SERVICE`, `ENV` (padrão `qa`), `DB` (`remote` ou `local`), `OBS`, `BUILD`, `ALL`, `TAG`, `HOST_PORT`, `CONTAINER_PORT`, `ENV_FILE`, `OBS_DIR`, `LOCAL_STATE_DIR`, `LOCAL_DB_CONSOLE_REF`.
+
+## Vários serviços e cluster local
+
+- `scripts/local.sh stack` sobe um perfil de serviços (`PROFILE=core|rec|ai|all`), chamando o `up` de cada um com a porta do host e a do container, e `unstack` para.
+- `scripts/cluster.sh` cria e gerencia um cluster k3d chamado `local` com o Argo CD (`up`, `down`, `status`, `apps`, `secrets`, `password`, `ui`). O k3d roda em um container (`ghcr.io/k3d-io/k3d`), então não precisa ser instalado. Todo `kubectl` usa o kubeconfig `kubeconfig-local` do diretório de estado e o contexto `k3d-local`; o contexto padrão da máquina nunca é usado.
+- O Argo CD é instalado na versão do `infra-platform` (`ARGOCD_VERSION`, padrão `v3.5.2`). As `Application` vêm da `main` do `infra-gitops` (`INFRA_GITOPS_DIR` aponta para uma cópia local).
+- Os comandos `make` equivalentes estão no fragmento `stack.mk` do `docs-warehouse`.
