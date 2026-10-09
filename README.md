@@ -52,3 +52,26 @@ que atualizarem a ferramenta.
 
 Scripts que operam um recurso específico — Terraform, GKE, ArgoCD ou state —
 continuam no repositório proprietário desse recurso.
+
+## Rodar um serviço localmente
+
+`scripts/local.sh` sobe um serviço da Solaria na sua máquina a partir da imagem do Docker Hub. Quem chama é o fragmento `local.mk` (`docs-warehouse/templates/make/`), com `make up`, `make down` e `make logs`. O guia para quem só quer usar está em `docs-warehouse/helps/TRY-LOCAL.md`.
+
+```bash
+make up                 # imagem do Docker Hub, segredos de qa, bancos remotos
+make up DB=local        # PostgreSQL (e Neo4j no api-recommendation) em containers
+make up OBS=1           # Grafana local e Collector, com a telemetria do serviço ligada
+make up BUILD=1         # constrói a imagem do Dockerfile do repositório
+make down ALL=1         # para o serviço, os bancos e o Grafana
+```
+
+Como funciona:
+
+- Os segredos vêm de `infisical export` com a sua conta (`infisical login`), gravados num arquivo temporário com permissão restrita e apagados ao final. Não há credencial de máquina. `ENV_FILE=caminho` usa um arquivo no lugar do Infisical.
+- `compose/service.yaml` roda o serviço, e `compose/deps.yaml` traz o PostgreSQL e o Neo4j locais. Tudo usa a rede externa `local`, criada pelo script.
+- Em `DB=local`, o schema vem do `database-console` (`LOCAL_DB_CONSOLE_REF`, por padrão `main`) e o Neo4j é populado pelo `database-bootstrap`.
+- Em `OBS=1`, o script clona o `infra-otel-collector` e sobe o `local/compose.yaml` dele. `OBS_DIR` aponta para uma cópia local.
+- `docker-push` publica só tags de desenvolvimento e recusa `latest`, `main`, `qa` e tags de versão.
+- Quando o Infisical falha, o script explica o que verificar e aponta para o `TRY-LOCAL.md`.
+
+Variáveis: `SERVICE`, `ENV` (padrão `qa`), `DB` (`remote` ou `local`), `OBS`, `BUILD`, `ALL`, `TAG`, `HOST_PORT`, `CONTAINER_PORT`, `ENV_FILE`, `OBS_DIR`, `LOCAL_STATE_DIR`, `LOCAL_DB_CONSOLE_REF`.
