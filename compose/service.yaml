@@ -1,0 +1,17 @@
+name: local-${SERVICE}
+
+services:
+  app:
+    image: ${SERVICE_IMAGE}
+    container_name: local-${SERVICE}
+    env_file:
+      - ${SECRETS_FILE}
+      - ${OVERRIDES_FILE}
+    ports:
+      - "127.0.0.1:${HOST_PORT}:${CONTAINER_PORT}"
+    restart: "no"
+
+networks:
+  default:
+    name: local
+    external: true
