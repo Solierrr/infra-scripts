@@ -1,7 +1,7 @@
 #!/bin/sh
 # Sobe um serviço da Solaria na máquina local a partir da imagem do Docker Hub.
 # Chamado pelo fragmento local.mk (docs-warehouse/templates/make). Uso:
-#   SERVICE=api-core sh local.sh up|down|logs|docker-build|docker-push|compose
+#   SERVICE=api-core sh local.sh up|down|logs|docker-build|docker-push|compose|stack|unstack
 set -eu
 
 ROOT=$(CDPATH='' cd -- "$(dirname -- "$0")/.." && pwd)
@@ -294,6 +294,57 @@ cmd_compose() {
   die "este repositório não tem arquivo de compose"
 }
 
+stack_services() {
+  case "${PROFILE:-core}" in
+    core) printf 'api-auth api-core api-messenger' ;;
+    rec) printf 'api-recommendation' ;;
+    ai) printf 'ai-assistant ai-validation ai-geographic ai-operational ai-accessibility' ;;
+    all) printf 'api-auth api-core api-messenger api-recommendation ai-assistant ai-validation ai-geographic ai-operational ai-accessibility' ;;
+    *) die "perfil desconhecido: ${PROFILE:-}. Use core, rec, ai ou all." ;;
+  esac
+}
+
+stack_ports() {
+  # stack_ports <serviço>: porta no host e porta no container
+  case "$1" in
+    api-auth) printf '8081 8080' ;;
+    api-core) printf '8080 8080' ;;
+    api-messenger) printf '8082 8080' ;;
+    api-recommendation) printf '8000 8000' ;;
+    ai-assistant) printf '8010 8000' ;;
+    ai-validation) printf '8011 8000' ;;
+    ai-geographic) printf '8012 8000' ;;
+    ai-operational) printf '8013 8000' ;;
+    ai-accessibility) printf '8014 8080' ;;
+    *) die "serviço desconhecido no perfil: $1" ;;
+  esac
+}
+
+cmd_stack() {
+  need docker
+  info "perfil ${PROFILE:-core}: $(stack_services)"
+  for service in $(stack_services); do
+    ports=$(stack_ports "$service")
+    host=${ports% *}
+    container=${ports#* }
+    SERVICE="$service" HOST_PORT="$host" CONTAINER_PORT="$container" BUILD=0 sh "$0" up ||
+      info "aviso: $service não subiu; seguindo com os demais"
+  done
+}
+
+cmd_unstack() {
+  need docker
+  for service in $(stack_services); do
+    SERVICE="$service" sh "$0" down || true
+  done
+  if [ "$ALL" = "1" ]; then
+    docker compose -p local-deps -f "$ROOT/compose/deps.yaml" down 2>/dev/null || true
+    if dir=$(obs_dir 2>/dev/null) && [ -f "$dir/local/compose.yaml" ]; then
+      docker compose -f "$dir/local/compose.yaml" down 2>/dev/null || true
+    fi
+  fi
+}
+
 case "$CMD" in
   up) cmd_up ;;
   down) cmd_down ;;
@@ -301,6 +352,8 @@ case "$CMD" in
   docker-build) cmd_docker_build ;;
   docker-push) cmd_docker_push ;;
   compose) cmd_compose ;;
+  stack) cmd_stack ;;
+  unstack) cmd_unstack ;;
   *)
     printf 'uso: SERVICE=<serviço> sh local.sh up|down|logs|docker-build|docker-push|compose\n' >&2
     exit 64
