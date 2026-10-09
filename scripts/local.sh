@@ -52,10 +52,14 @@ container_port() {
     printf '%s' "$CONTAINER_PORT"
     return
   fi
-  case "$SERVICE" in
-    api-recommendation | ai-* | mcp-* | google-registry) printf '8000' ;;
-    *) printf '8080' ;;
-  esac
+  if [ -f Dockerfile ]; then
+    exposed=$(awk '$1 == "EXPOSE" { sub(/\/.*/, "", $2); print $2; exit }' Dockerfile | tr -d '')
+    if [ -n "$exposed" ]; then
+      printf '%s' "$exposed"
+      return
+    fi
+  fi
+  printf '8080'
 }
 
 host_port() {
