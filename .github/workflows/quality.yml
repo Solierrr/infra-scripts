@@ -1,0 +1,25 @@
+name: Code Quality
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: read
+
+jobs:
+  quality:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Analyze the PowerShell scripts
+        shell: pwsh
+        run: |
+          Install-Module PSScriptAnalyzer -Force -Scope CurrentUser
+          $results = Invoke-ScriptAnalyzer -Path scripts -Recurse -Severity Error
+          $results | Format-Table -AutoSize
+          if ($results) { exit 1 }
