@@ -1,5 +1,22 @@
 # Changelog
 
+## [0.3.0](https://github.com/Solierrr/infra-scripts/compare/v0.2.0...v0.3.0) (2026-10-10)
+
+
+### Features
+
+* add service profiles to the local runner ([dbdb55e](https://github.com/Solierrr/infra-scripts/commit/dbdb55e5426210bb52d6d4574bb62997fcd7a939))
+* add the local cluster with argo cd ([9a1a307](https://github.com/Solierrr/infra-scripts/commit/9a1a307d27712812fbfab83f28838c6e3e78987c))
+* add the local service runner ([#7](https://github.com/Solierrr/infra-scripts/issues/7)) ([7fb5bcd](https://github.com/Solierrr/infra-scripts/commit/7fb5bcd849d98c63d2e39654d89ef56e75066d1e))
+
+
+### Bug Fixes
+
+* mark the cluster script as executable ([4a70eeb](https://github.com/Solierrr/infra-scripts/commit/4a70eeba1f31cf09201ebe2c252abfa08aad525c))
+* read the container port from the dockerfile ([7ae8585](https://github.com/Solierrr/infra-scripts/commit/7ae85859a8be2a980b26fa23d4e6765b267472de))
+* stop git bash from rewriting the infisical secret path ([cf92191](https://github.com/Solierrr/infra-scripts/commit/cf92191d81b269934c2c0e675c72b314acf591f3))
+* strip carriage returns when reading the exposed port ([771cb74](https://github.com/Solierrr/infra-scripts/commit/771cb74a0359007792676521c4b09221df6b7cbc))
+
 ## [0.2.0](https://github.com/Solierrr/infra-scripts/compare/v0.1.0...v0.2.0) (2026-09-30)
 
 
