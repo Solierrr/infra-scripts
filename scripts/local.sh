@@ -4,6 +4,9 @@
 #   SERVICE=api-core sh local.sh up|down|logs|docker-build|docker-push|compose|stack|unstack
 set -eu
 
+MSYS_NO_PATHCONV=1
+export MSYS_NO_PATHCONV
+
 ROOT=$(CDPATH='' cd -- "$(dirname -- "$0")/.." && pwd)
 CMD=${1:-help}
 

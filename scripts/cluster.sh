@@ -7,6 +7,9 @@
 # da máquina (por exemplo o do GKE) nunca é tocado.
 set -eu
 
+MSYS_NO_PATHCONV=1
+export MSYS_NO_PATHCONV
+
 CMD=${1:-help}
 [ "$#" -gt 0 ] && shift
 
